@@ -4,5 +4,5 @@ node_js:
 install:
   - "npm install -g typescript"
 script:
-  - 'tsc -t "ES5" --out "/build/LZMA.js" "src/lzma/LZMA.ts" --sourcemap'
-  - 'tsc -t "ES5" --out "/build/LZMAWorker.js" "src/lzma/LZMAWorker.ts" --sourcemap'
+  - 'tsc -t "ES5" --out "build/LZMA.js" "src/lzma/LZMA.ts" --sourcemap'
+  - 'tsc -t "ES5" --out "build/LZMAWorker.js" "src/lzma/LZMAWorker.ts" --sourcemap'
