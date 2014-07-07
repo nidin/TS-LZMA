@@ -29,10 +29,6 @@ module nid
         public decoder:LzmaDecoder;
         public data:Uint8Array;
 
-        //Local registers
-        private loc1:number;
-        private loc2:number;
-
         static INIT_PROBS(p:Uint16Array):void{
             for (var i:number = 0; i < p.length; i++) {
                 p[i] = this.PROB_INIT_VAL;
