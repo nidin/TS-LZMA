@@ -598,14 +598,12 @@ var nid;
                     if (this.decoder.outWindow.out_pos != unpackSize) {
                         throw "Finished with end marker before than specified size";
                     }
-                    console.log("Warning: ");
+                    //console.log("Warning: ");
                 }
                 //console.log("Finished with end marker");
             } else {
                 throw "Internal Error";
             }
-
-            console.log("\n");
 
             if (this.decoder.rangeDec.corrupted) {
                 console.log("Warning: LZMA stream is corrupted");
