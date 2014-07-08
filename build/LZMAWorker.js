@@ -352,6 +352,12 @@ var nid;
 ///<reference path="LZMA.d.ts" />
 var nid;
 (function (nid) {
+    /**
+    * LZMA Decoder
+    * @author Nidin Vinayakan | nidinthb@gmail.com
+    */
+    var MEMORY = nid.utils.MEMORY;
+
     var RangeDecoder = (function () {
         function RangeDecoder() {
             this.rangeI = 0;
@@ -554,10 +560,9 @@ var nid;
 
             this.decoder.decodeProperties(header);
 
-            console.log("\nlc=" + this.decoder.lc + ", lp=" + this.decoder.lp + ", pb=" + this.decoder.pb);
-            console.log("\nDictionary Size in properties = " + this.decoder.dictSizeInProperties);
-            console.log("\nDictionary Size for decoding  = " + this.decoder.dictSize);
-
+            //console.log("lc="+this.decoder.lc+", lp="+this.decoder.lp+", pb="+this.decoder.pb);
+            //console.log("Dictionary Size in properties = "+this.decoder.dictSizeInProperties);
+            //console.log("Dictionary Size for decoding  = "+this.decoder.dictSize);
             //return this.ucdata;
             var unpackSize = 0;
             var unpackSizeDefined = false;
@@ -571,43 +576,37 @@ var nid;
 
             this.decoder.markerIsMandatory = !unpackSizeDefined;
 
-            console.log("\n");
-            if (unpackSizeDefined) {
-                console.log("Uncompressed Size : " + unpackSize + " bytes");
-            } else {
-                console.log("End marker is expected\n");
-            }
+            /*if (unpackSizeDefined){
+            console.log("Uncompressed Size : "+ unpackSize +" bytes");
+            }else{
+            console.log("End marker is expected");
+            }*/
             this.decoder.rangeDec.inStream = data;
-            console.log("\n");
-
             this.decoder.create();
 
             // we support the streams that have uncompressed size and marker.
             var res = this.decoder.decode(unpackSizeDefined, unpackSize);
 
-            console.log("Read    ", this.decoder.rangeDec.in_pos);
-            console.log("Written ", this.decoder.outWindow.out_pos);
-
+            //console.log("Read    ", this.decoder.rangeDec.in_pos);
+            //console.log("Written ", this.decoder.outWindow.out_pos);
             if (res == LZMA.LZMA_RES_ERROR) {
                 throw "LZMA decoding error";
             } else if (res == LZMA.LZMA_RES_FINISHED_WITHOUT_MARKER) {
-                console.log("Finished without end marker");
+                //console.log("Finished without end marker");
             } else if (res == LZMA.LZMA_RES_FINISHED_WITH_MARKER) {
                 if (unpackSizeDefined) {
                     if (this.decoder.outWindow.out_pos != unpackSize) {
                         throw "Finished with end marker before than specified size";
                     }
-                    console.log("Warning: ");
+                    //console.log("Warning: ");
                 }
-                console.log("Finished with end marker");
+                //console.log("Finished with end marker");
             } else {
                 throw "Internal Error";
             }
 
-            console.log("\n");
-
             if (this.decoder.rangeDec.corrupted) {
-                console.log("\nWarning: LZMA stream is corrupted\n");
+                console.log("Warning: LZMA stream is corrupted");
             }
             return this.decoder.outWindow.outStream;
         };
@@ -638,23 +637,25 @@ var nid;
 
     var LZMAWorker = (function () {
         function LZMAWorker() {
-            this.command = 0;
+            this.command = null;
             var _this = this;
             this.decoder = new nid.LZMA();
 
             addEventListener('message', function (e) {
-                if (_this.command == 0) {
+                if (_this.command == null) {
                     _this.command = e.data;
-                } else if (_this.command == 1) {
-                    _this.command = 0;
-                } else if (_this.command == 2) {
+                } else if (_this.command['job'] == 1) {
+                    _this.command = null;
+                } else if (_this.command['job'] == 2) {
                     _this.decode(e.data);
                 }
             }, false);
         }
         LZMAWorker.prototype.decode = function (data) {
+            this.time = Date.now();
             var result = this.decoder.decode(new Uint8Array(data));
-            postMessage(LZMAWorker.DECODE);
+            this.command['time'] = Date.now() - this.time;
+            postMessage(this.command);
             postMessage(result.buffer, [result.buffer]);
         };
         LZMAWorker.ENCODE = 1;

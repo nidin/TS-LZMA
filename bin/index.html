@@ -18,8 +18,7 @@
         var decoder2 = new nid.LZMA();
         var ENCODE = 1;
         var DECODE = 2;
-        var command = 0;
-        var command2 = 0;
+        var command = null;
 
         reader.onload = function(e){
             var inData = new Uint8Array(e.target.result);
@@ -43,17 +42,17 @@
         function decode(data,callback){
 
             decoder.onmessage = function(e){
-                if(command == 0){
-                    command = e.data;
-                }else if(command == ENCODE){
-                    command == 0;//encode not implemented
-                }else if(command == DECODE){
-                    command == 0;
+                if(this.command == null){
+                    this.command = e.data;
+                }else if(this.command.job == ENCODE){
+                    this.command == null;//encode not implemented
+                }else if(this.command.job == DECODE){
+                    this.command == null;
                     callback(e.data);
                 }
             }
 
-            decoder.postMessage(DECODE)
+            decoder.postMessage({ job:DECODE, jobId:0 })
             decoder.postMessage(data.buffer,[data.buffer]);
             //decoder.postMessage(data.buffer); for IE, since it is not implemented transferable ArrayBuffer
         }

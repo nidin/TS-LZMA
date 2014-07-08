@@ -29,10 +29,6 @@ module nid
         public decoder:LzmaDecoder;
         public data:Uint8Array;
 
-        //Local registers
-        private loc1:number;
-        private loc2:number;
-
         static INIT_PROBS(p:Uint16Array):void{
             for (var i:number = 0; i < p.length; i++) {
                 p[i] = this.PROB_INIT_VAL;
@@ -66,9 +62,9 @@ module nid
 
             this.decoder.decodeProperties(header);
 
-            console.log("lc="+this.decoder.lc+", lp="+this.decoder.lp+", pb="+this.decoder.pb);
-            console.log("Dictionary Size in properties = "+this.decoder.dictSizeInProperties);
-            console.log("Dictionary Size for decoding  = "+this.decoder.dictSize);
+            //console.log("lc="+this.decoder.lc+", lp="+this.decoder.lp+", pb="+this.decoder.pb);
+            //console.log("Dictionary Size in properties = "+this.decoder.dictSizeInProperties);
+            //console.log("Dictionary Size for decoding  = "+this.decoder.dictSize);
             //return this.ucdata;
             var unpackSize:number = 0;//UInt64
             var unpackSizeDefined:boolean = false;
@@ -83,24 +79,24 @@ module nid
 
             this.decoder.markerIsMandatory = !unpackSizeDefined;
 
-            if (unpackSizeDefined){
+            /*if (unpackSizeDefined){
                 console.log("Uncompressed Size : "+ unpackSize +" bytes");
             }else{
                 console.log("End marker is expected");
-            }
+            }*/
             this.decoder.rangeDec.inStream = data;
             this.decoder.create();
             // we support the streams that have uncompressed size and marker.
             var res:number = this.decoder.decode(unpackSizeDefined, unpackSize); //int
 
-            console.log("Read    ", this.decoder.rangeDec.in_pos);
-            console.log("Written ", this.decoder.outWindow.out_pos);
+            //console.log("Read    ", this.decoder.rangeDec.in_pos);
+            //console.log("Written ", this.decoder.outWindow.out_pos);
 
             if (res == LZMA.LZMA_RES_ERROR){
                 throw "LZMA decoding error";
             }
             else if (res == LZMA.LZMA_RES_FINISHED_WITHOUT_MARKER){
-                console.log("Finished without end marker");
+                //console.log("Finished without end marker");
             }
             else if (res == LZMA.LZMA_RES_FINISHED_WITH_MARKER)
             {
@@ -109,15 +105,13 @@ module nid
                     if (this.decoder.outWindow.out_pos != unpackSize){
                         throw "Finished with end marker before than specified size";
                     }
-                    console.log("Warning: ");
+                    //console.log("Warning: ");
                 }
-                console.log("Finished with end marker");
+                //console.log("Finished with end marker");
             }
             else{
                 throw "Internal Error";
             }
-
-            console.log("\n");
 
             if (this.decoder.rangeDec.corrupted)
             {
