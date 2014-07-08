@@ -7,7 +7,8 @@ module nid{
         static ENCODE:number = 1;
         static DECODE:number = 2;
         private decoder:LZMA;
-        private command:number = 0;
+        private command:Object = null;
+        private time:number;
 
         constructor ()
         {
@@ -15,18 +16,20 @@ module nid{
             this.decoder = new nid.LZMA();
 
             addEventListener('message', (e:any) => {
-                if(_this.command == 0){
+                if(_this.command == null){
                     _this.command = e.data;
-                }else if(_this.command == 1){
-                    _this.command = 0;
-                }else if(_this.command == 2){
+                }else if(_this.command['job'] == 1){
+                    _this.command= null;
+                }else if(_this.command['job'] == 2){
                     _this.decode(e.data);
                 }
             }, false);
         }
         private decode(data):void{
+            this.time = Date.now();
             var result = this.decoder.decode(new Uint8Array(data));
-            (<any> postMessage)(LZMAWorker.DECODE);
+            this.command['time'] = Date.now() - this.time;
+            (<any> postMessage)(this.command);
             (<any> postMessage)(result.buffer,[result.buffer]);
         }
     }
