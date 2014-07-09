@@ -1,0 +1,25 @@
+{
+    "name": "TS-LZMA",
+    "version": "1.0.0",
+    "description": "LZMA Decoder written in TypeScript (JavaScript)",
+    "main": "src/lzma/LZMA.ts",
+    "scripts": {
+        "test": "grunt test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nidin/TS-LZMA.git"
+    },
+    "keywords": [
+        "LZMA",
+        "data",
+        "compression",
+        "javascript",
+        "typescript"
+    ],
+    "author": "Nidin Vinayakan",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/nidin/TS-LZMA/issues"
+    }
+}
