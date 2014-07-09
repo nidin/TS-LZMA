@@ -1,6 +1,6 @@
 LZMA Decoder
 ============
-### Status : [![Build Status](https://api.travis-ci.org/nidin/TS-LZMA.png)](https://travis-ci.org/nidin/TS-LZMA)
+### Status : [![Build Status](https://api.travis-ci.org/nidin/TS-LZMA.png)](https://travis-ci.org/nidin/TS-LZMA) [![Coverage Status](https://coveralls.io/repos/nidin/TS-LZMA/badge.png)](https://coveralls.io/r/nidin/TS-LZMA)
 
 * Option 1: With worker (recommended)
 * Option 2: With out worker
