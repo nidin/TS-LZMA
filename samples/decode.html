@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>AssemblyScript LZMA Decoder</title>
+    <script src="../build/lzma.js"></script>
+    <script src="./decode.js"></script>
+  </head>
+  <body>
+    <script>
+      const rawFile = 'test.txt'
+      const compressedFile = 'test.lzma'
+      async function init() {
+        const rawData = new Uint8Array(
+          await (await fetch(rawFile)).arrayBuffer(),
+        )
+        const lzmaCompressedData = new Uint8Array(
+          await (await fetch(compressedFile)).arrayBuffer(),
+        )
+
+        const result = decode(lzma, lzmaCompressedData, rawData)
+        console.log(result)
+      }
+      init()
+    </script>
+  </body>
+</html>
