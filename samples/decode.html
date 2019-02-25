@@ -6,8 +6,8 @@
   </head>
   <body>
     <script>
-      const rawFile = 'test.txt'
-      const compressedFile = 'test.lzma'
+      const rawFile = 'iron-man.obj'
+      const compressedFile = 'iron-man.obj.lzma'
       async function init() {
         const rawData = new Uint8Array(
           await (await fetch(rawFile)).arrayBuffer(),
@@ -17,7 +17,6 @@
         )
 
         const result = decode(lzma, lzmaCompressedData, rawData)
-        console.log(result)
       }
       init()
     </script>

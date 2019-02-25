@@ -4,7 +4,8 @@
     "description": "LZMA Decoder written in TypeScript (JavaScript)",
     "main": "src/lzma/LZMA.ts",
     "scripts": {
-        "test": "grunt test"
+        "test": "grunt test",
+        "build": "webpack"
     },
     "repository": {
         "type": "git",

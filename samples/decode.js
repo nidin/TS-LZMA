@@ -1,10 +1,16 @@
 function decode(lzma, inputData, rawData) {
   const _lzma = new lzma.LZMA()
+  const _unpackSize = _lzma.unpackSize(inputData)
+  console.log('unpackSize:', _unpackSize)
+
+  const t1 = performance.now()
   const decodedData = _lzma.decode(inputData)
+  const t2 = performance.now()
+  console.log(`[JS]Decode time: ${(t2 - t1).toFixed(2)}ms`)
   verify(decodedData, rawData)
-  const decoder =  new TextDecoder()
-  const text = decoder.decode(decodedData)
-  console.log(text)
+  // const decoder =  new TextDecoder()
+  // const text = decoder.decode(decodedData)
+  // console.log(text)
 }
 
 const msg =

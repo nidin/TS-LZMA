@@ -7,7 +7,7 @@ import { RangeDecoder } from './RangeDecoder';
  * LZMA Decoder
  * @author Nidin Vinayakan | nidinthb@gmail.com
  */
-
+type i32 = number
 export class LZMA {
   static LZMA_DIC_MIN: number = 1 << 12
   static LZMA_RES_ERROR: number = 0
@@ -53,6 +53,24 @@ export class LZMA {
   constructor() {
     this.decoder = new LzmaDecoder()
   }
+  public unpackSize(data: Uint8Array): i32 {
+    var header: Uint8Array = new Uint8Array(13)
+    var i: i32 //int
+    for (i = 0; i < 13; i++) {
+        header[i] = data[i]
+    }
+    
+    var unpackSize: i32 = 0 //UInt64
+    var unpackSizeDefined: boolean = false
+    for (i = 0; i < 8; i++) {
+        var b: i32 = header[5 + i]
+        if (b != 0xff) {
+            unpackSizeDefined = true
+        }
+        unpackSize |= b << (8 * i)
+    }
+    return unpackSize
+}
   public decode(data: Uint8Array): Uint8Array {
     this.data = data
     //var header:Uint8Array = data.readUint8Array(13);
